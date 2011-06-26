@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Starr Horne"]
   s.email       = ["starr@chromahq.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Use yaml preambles in your documents & templates}
+  s.description = %q{Allows you to add YAML front matter to your templates. Useful for adding metadata to static pages}
 
   s.rubyforge_project = "preamble"
 
