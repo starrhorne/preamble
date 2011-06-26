@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Preamble::VERSION
   s.authors     = ["Starr Horne"]
   s.email       = ["starr@chromahq.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/starrhorne/preamble"
   s.summary     = %q{Use yaml preambles in your documents & templates}
   s.description = %q{Allows you to add YAML front matter to your templates. Useful for adding metadata to static pages}
 
