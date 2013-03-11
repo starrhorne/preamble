@@ -10,42 +10,43 @@ module Preamble
 
     state = :before_preamble
 
-    open(path).each do |line|
+    open(path) do |f|
+      f.each do |line|
 
-      stripped = line.strip
+        stripped = line.strip
 
-      case state
+        case state
 
-        when :before_preamble
+          when :before_preamble
 
-          new_state = case stripped
-            when "---" 
-              :preamble
-            when "" 
-              :before_preamble
-            else 
-              raise "First line must begin with ---"
-          end
+            new_state = case stripped
+              when "---"
+                :preamble
+              when ""
+                :before_preamble
+              else
+                raise "First line must begin with ---"
+            end
 
-        when :preamble
+          when :preamble
 
-          new_state = case stripped
-            when "---" 
-              :after_preamble
-            else 
-              preamble_lines << line
-              :preamble
-          end
+            new_state = case stripped
+              when "---"
+                :after_preamble
+              else
+                preamble_lines << line
+                :preamble
+            end
 
-        when :after_preamble
-          new_state = :after_preamble
-          body_lines << line
+          when :after_preamble
+            new_state = :after_preamble
+            body_lines << line
 
-        else raise "Invalid State: #{ state }"
+          else raise "Invalid State: #{ state }"
+        end
+
+        state = new_state
       end
-
-      state = new_state
-
     end
 
     return [YAML::load(preamble_lines.join), body_lines.join]
