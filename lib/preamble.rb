@@ -1,4 +1,4 @@
-require "preamble/version"
+require 'preamble/version'
 require 'yaml'
 
 module Preamble
