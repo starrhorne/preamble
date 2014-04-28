@@ -1,16 +1,20 @@
-require "preamble/version"
+require 'preamble/version'
 require 'yaml'
 
 module Preamble
-
-  def self.load(path)
-
+  
+  DEFAULTS = {
+    :external_encoding => Encoding.default_external
+  }
+  
+  def self.load(path, options = {})
     preamble_lines = []
     body_lines = []
-
+    options = DEFAULTS.merge(options)
+    
     state = :before_preamble
-
-    open(path) do |f|
+    
+    open(path, "r:#{options[:external_encoding]}") do |f|
       f.each do |line|
 
         stripped = line.strip
@@ -53,8 +57,8 @@ module Preamble
 
   end
 
-  def self.load_multiple(*paths)
-    paths.map{ |path| Preamble.load(path) }
+  def self.load_multiple(*paths, **options)
+    paths.map{ |path| Preamble.load(path, options) }
   end
 
 end
