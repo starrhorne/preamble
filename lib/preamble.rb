@@ -1,15 +1,34 @@
 require 'preamble/version'
 require 'yaml'
 
-module Preamble
+class Preamble
   
   DEFAULTS = {
     :external_encoding => Encoding.default_external
   }
+
+  attr_accessor :metadata, :content
+
+  def initialize(metadata, content)
+    @metadata = metadata
+    @content = content
+  end
+
+  def metadata_with_content
+    @metadata.to_yaml + "---\n" + @content
+  end
+
+  def save(path, options = {})
+    options = DEFAULTS.merge(options)
+
+    open(path, "w:#{options[:external_encoding]}") do |f|
+      f.write metadata_with_content
+    end
+  end
   
   def self.load(path, options = {})
-    preamble_lines = []
-    body_lines = []
+    preamble_lines = String.new
+    content_lines = String.new
     options = DEFAULTS.merge(options)
     
     state = :before_preamble
@@ -44,20 +63,22 @@ module Preamble
 
           when :after_preamble
             new_state = :after_preamble
-            body_lines << line
+            content_lines << line
 
-          else raise "Invalid State: #{ state }"
+          else
+            raise "Invalid State: #{ state }"
+
         end
 
         state = new_state
       end
     end
 
-    return [YAML::load(preamble_lines.join), body_lines.join]
-
+    return new(YAML::load(preamble_lines), content_lines)
   end
 
-  def self.load_multiple(*paths, **options)
+  def self.load_multiple(*paths)
+    options = paths.last.is_a?(Hash) ? paths.pop : {}
     paths.map{ |path| Preamble.load(path, options) }
   end
 

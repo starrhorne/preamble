@@ -1,4 +1,5 @@
 require_relative '../spec_helper'
+require 'tempfile'
 
 describe Preamble do
   
@@ -8,24 +9,19 @@ describe Preamble do
       result = Preamble.load(standard)    
     end
     
-    it "should return the result as an array" do
+    it "should return the result as a Preamble object" do
       result = Preamble.load(standard)
-      expect(result).to be_a Array 
+      expect(result).to be_a Preamble
+    end
+        
+    it "should return a Preamble object with metadata as a Hash" do
+      result = Preamble.load(standard)
+      expect(result.metadata).to be_a Hash      
     end
     
-    it "should return an array with two values" do
+    it "should return a Preamble object with content as a String" do
       result = Preamble.load(standard)
-      expect(result.size).to eq 2 
-    end
-    
-    it "should return an array with a hash as the first value" do
-      result = Preamble.load(standard)
-      expect(result[0]).to be_a Hash      
-    end
-    
-    it "should return an array with a string as the first value" do
-      result = Preamble.load(standard)
-      expect(result[1]).to be_a String      
+      expect(result.content).to be_a String      
     end
 
     it "should accept leading whitespace" do
@@ -42,9 +38,28 @@ describe Preamble do
     
     it "should read a UTF-8 character" do
       result = Preamble.load(unicode, {:external_encoding => 'UTF-8'})
-      expect(result[0]['unicode_tm']).to eq "™"
+      expect(result.metadata['unicode_tm']).to eq "\u2122" # "TM"
     end
     
+  end
+
+  describe "#metadata_with_content" do
+    it "should be the same as the source file" do
+      result = Preamble.load(standard)
+      expect(File.read(standard)).to eq(result.metadata_with_content)
+    end
+  end
+
+  describe "#save" do
+    it "should save a modified file" do
+      result = Preamble.load(standard)
+      output_file = Tempfile.new('preamble').path
+      result.metadata["key1"] += "!"
+      result.save(output_file)
+
+      result = Preamble.load(output_file)
+      expect(result.metadata["key1"]).to eq("value1!")
+    end
   end
   
   describe "#load_multiple" do
