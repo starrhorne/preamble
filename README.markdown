@@ -24,13 +24,21 @@ Usage
     Preamble.load("./file.xyz") 
     Preamble.load_multiple("./file.xyz", "./file.abc") 
 
+    file = Preamble.new({"author" => "Lucky", "year" => 2014}, "My lucky diary.")
+    file.save("diary.txt")
 
 Output
 ------
 
-The Preamble.load function returns an array. The first part is your data, the second is the body conent.
+The Preamble.load function returns a Preamble object. Your data will be in preamble.metadata, and the rest of the content will be in preamble.content.
 
-    [ { "key1" => "value1", "key2" => [1, 2, 3] }, "\nYour body content goes here"]
+`preamble.metadata`
+
+    { "key1" => "value1", "key2" => [1, 2, 3] }
+
+`preamble.content`
+
+    "\nYour body content goes here"
 
 
 Notes
