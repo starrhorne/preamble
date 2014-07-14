@@ -21,11 +21,20 @@ Example
 Usage
 -----
 
+    # load file with metadata and content
     Preamble.load("./file.xyz") 
+
+    # load multiple files with metadata and content
     Preamble.load_multiple("./file.xyz", "./file.abc") 
 
+    # save metadata and content
     file = Preamble.new({"author" => "Lucky", "year" => 2014}, "My lucky diary.")
     file.save("diary.txt")
+
+    # load, modify metadata, then save
+    file = Preamble.load('./file.xyz')
+    file.metadata["new_key"] = "factoid"
+    file.save('./file.xyz')
 
 Output
 ------
